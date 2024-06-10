@@ -1,4 +1,4 @@
-export type PodcastType = {
+export type TopPodcastType = {
   "im:name": {
     "label": string;
   };
