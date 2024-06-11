@@ -1,0 +1,96 @@
+.main {
+  display: flex;
+  margin: 0 auto;
+  text-align: center;
+  padding: 2rem;
+  max-width: var(--max-width);
+  gap: 4rem;
+}
+.status {
+  margin-top: 20px;
+  text-align: center;
+}
+.error {
+  margin-top: 2rem;
+}
+.podcastInfo {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  width: 30%;
+  padding: 4rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  gap: 1rem;
+}
+.artistName {
+  font-style: italic;
+}
+.podcastImage {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  gap: 2rem;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+.episodeBlock {
+  width: 100%;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+  font-weight: bolder;
+  padding: 1rem;
+  font-size: 1.5rem;
+  text-align: left;
+}
+.episodeTable {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.episodeTable tr > *:nth-child(1) {
+  width: 70%;
+  text-align: left;
+}
+.episodeTable tr > *:nth-child(2) {
+  width: 5%;
+  text-align: left;
+}
+.episodeTable tr > *:nth-child(3) {
+  width: auto;
+  text-align: right;
+}
+.episodeTable thead {
+  border-bottom: 2px solid #b8b8b8;
+  padding-bottom: 0.5rem;
+}
+.episodeTable tbody tr > td:first-child {
+  color: rgb(0, 116, 210);
+  font-weight: 600;
+  cursor: pointer;
+}
+.episodeTable tbody td {
+  padding: 8px 0;
+  border-bottom: 1px solid #d6d6d6;
+}
+.episodeTable tbody tr:last-child td {
+  border-bottom: none;
+}
+.podcastDescription {
+  line-height: 1.5;
+  font-style: italic;
+  word-wrap: break-word;
+}

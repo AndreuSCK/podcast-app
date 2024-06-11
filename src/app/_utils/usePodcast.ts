@@ -1,18 +1,16 @@
-import { SetStateAction, useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../podcastProvider";
-import useTopPodcasts from "./useTopPodcasts";
+import { SetStateAction, cache, useContext, useEffect, useState } from "react";
+import { PodcastContext } from "../podcastProvider";
 
 const usePodcast = (id: string) => {
-  const { getPodcastDescription } = useContext(ThemeContext);
-  const [podcastList, setPodcastList] = useState<PodcastEpisodeType[]>();
-  const [podcastInfo, setPodcastInfo] = useState<PodcastInfoType>();
-  const [podcastCount, setPodcastCount] = useState(0);
-  const [podcastDescription, setPodcastDescription] = useState<string>("");
+  const { podcastData, setPodcastData, topPodcasts } =
+    useContext(PodcastContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
 
   useEffect(() => {
+    if (!id) return;
     const getPodcastData = async () => {
       try {
         const response = await fetch(
@@ -28,16 +26,17 @@ const usePodcast = (id: string) => {
         );
         const data = await response.json();
         const content = JSON.parse(data.contents);
+        console.log(content.results[0]);
         if (content && content.resultCount === 0) {
           throw new Error();
         }
-        // The first item in the results array is the podcast info, the rest are episodes
-        setPodcastInfo(content.results.shift());
-        setPodcastList(content.results);
-        setPodcastCount(content.resultCount);
-        setPodcastDescription(getPodcastDescription(id));
-
+        setPodcastData({
+          info: content.results.shift(),
+          episodes: content.results,
+          podcastCount: content.resultCount,
+        });
       } catch (error) {
+        console.log(error);
         setError(error);
       } finally {
         setIsLoading(false);
@@ -45,17 +44,25 @@ const usePodcast = (id: string) => {
     };
     getPodcastData();
   }, [id]);
+
   const getEpisode = (episodeId: string) => {
-    return podcastList?.find((episode) => episode.trackId === Number(episodeId));
-  }
+    return podcastData?.episodes?.find(
+      (episode) => episode.trackId === Number(episodeId)
+    );
+  };
+  const getDescription = (id: string) => {
+    const podcast = topPodcasts?.find(
+      (podcast) => podcast.id.attributes["im:id"] === id
+    );
+    if (!podcast) return;
+    return podcast.summary.label;
+  };
+
   return {
-    podcastList,
-    podcastInfo,
-    podcastCount,
-    podcastDescription,
     loading: isLoading,
     error,
-    getEpisode
+    getEpisode,
+    getDescription,
   };
 };
 

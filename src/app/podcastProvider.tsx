@@ -1,71 +1,39 @@
 "use client";
-import React, {
-  createContext,
-  ReactNode,
-  useState,
-} from "react";
+import React, { createContext, ReactNode, useState } from "react";
+import { TopPodcastType } from "./_types/topPodcastType";
 
-type PodcastDescriptions = {
-  id: string;
-  description: string;
+type PodcastDataType = {
+  info: PodcastInfoType;
+  episodes: PodcastEpisodeType[];
+  podcastCount: number;
 };
-type ThemeContextData = {
-  theme: string;
-  toggleTheme: () => void;
-  setPodcastDescription: (podcasts: PodcastDescriptions[]) => void;
-  getPodcastDescription: (id: string) => string;
+type PodcastContextData = {
+  podcastData: PodcastDataType | undefined;
+  setPodcastData: (podcasts: PodcastDataType) => void;
+  topPodcasts: TopPodcastType[];
+  setTopPodcasts: (podcasts: TopPodcastType[]) => void;
 };
-
-export const ThemeContext = createContext<ThemeContextData>({
-  theme: "light",
-  toggleTheme: () => {},
-  getPodcastDescription: (id: string) => "",
-  setPodcastDescription: (podcasts: PodcastDescriptions[]) => {},
+export const PodcastContext = createContext<PodcastContextData>({
+  podcastData: {} as PodcastDataType,
+  setPodcastData: (podcasts: PodcastDataType) => {},
+  topPodcasts: {} as TopPodcastType[],
+  setTopPodcasts: (podcasts: TopPodcastType[]) => {},
 });
 
 export function PodcastProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState("light");
-  const [podcastDescriptionsState, setPodcastDescriptionsState] = useState<
-    PodcastDescriptions[]
-  >([]);
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
-  const setPodcastDescription = (podcasts: PodcastDescriptions[]) => {
-    localStorage.setItem("podcastDescriptions", JSON.stringify(podcasts));
-    setPodcastDescriptionsState(podcasts);
-  };
-  const getPodcastDescription = (id: string) => {
-    const description =
-      podcastDescriptionsState.find((podcast) => podcast.id === id)
-        ?.description;
-    if (description) return description;
-
-    const podcastDescriptionsStorage = localStorage.getItem(
-      "podcastDescriptions"
-    );
-    if (podcastDescriptionsStorage) {
-      const podcastDescriptions = JSON.parse(podcastDescriptionsStorage);
-      return (
-        (podcastDescriptions.find(
-          (podcast: PodcastDescriptions) => podcast.id === id
-        )?.description as string) || ""
-      );
-    }
-    return "Description not found";
-  };
+  const [podcastData, setPodcastData] = useState<PodcastDataType>();
+  const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>([]);
 
   return (
-    <ThemeContext.Provider
+    <PodcastContext.Provider
       value={{
-        theme,
-        toggleTheme,
-        setPodcastDescription,
-        getPodcastDescription,
+        podcastData,
+        setPodcastData,
+        topPodcasts,
+        setTopPodcasts,
       }}
     >
       {children}
-    </ThemeContext.Provider>
+    </PodcastContext.Provider>
   );
 }

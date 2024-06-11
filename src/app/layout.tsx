@@ -4,11 +4,12 @@ import "./globals.css";
 import Topbar from "./_components/topbar";
 import { PodcastProvider } from "./podcastProvider";
 
+export const runtime = 'edge'
 const inter = Inter({ subsets: ["latin"], preload: false });
 
 export const metadata: Metadata = {
   title: "Podcaster",
-  description: "Best apple podcasts online"
+  description: "Best apple podcasts online",
 };
 
 export default function RootLayout({
