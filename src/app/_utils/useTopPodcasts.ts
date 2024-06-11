@@ -1,14 +1,18 @@
 "use client";
 
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import { TopPodcastType } from "../_types/topPodcastType";
+import { ThemeContext } from "../podcastProvider";
 
 const useTopPodcasts = () => {
-  const [topPodcastsOriginal, setTopPodcastsOriginal] = useState<TopPodcastType[]>();
+  const [topPodcastsOriginal, setTopPodcastsOriginal] =
+    useState<TopPodcastType[]>();
   const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
+
+  const { setPodcastDescription } = useContext(ThemeContext);
 
   useEffect(() => {
     const getTopPodcasts = async () => {
@@ -17,9 +21,6 @@ const useTopPodcasts = () => {
           `${ALLORIGINSURL}https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
             next: {
               revalidate: 24 * 60 * 60, // revalidate after 24 hours
             },
@@ -27,8 +28,19 @@ const useTopPodcasts = () => {
         );
         const data = await response.json();
         const content = JSON.parse(data.contents);
+        if (!content.feed.entry) {
+          throw new Error("No podcasts found");
+        }
         setTopPodcasts(content.feed.entry);
         setTopPodcastsOriginal(content.feed.entry);
+        setPodcastDescription(
+          content.feed.entry.map((podcast: TopPodcastType) => {
+            return {
+              id: podcast.id.attributes["im:id"],
+              description: podcast["summary"].label,
+            };
+          })
+        );
       } catch (error) {
         console.log(error);
         setError(error);

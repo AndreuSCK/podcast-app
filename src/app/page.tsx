@@ -5,12 +5,7 @@ import useTopPodcasts from "./_utils/useTopPodcasts";
 
 export default function Home() {
   const router = useRouter();
-  const {
-    topPodcasts,
-    filterPodcasts,
-    loading,
-    error,
-  } = useTopPodcasts();
+  const { topPodcasts, filterPodcasts, loading, error } = useTopPodcasts();
 
   if (loading) {
     return <p className={styles.status}>Loading...</p>;
@@ -21,13 +16,16 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <section className={styles.podcastSection}>
-        <input
-          className={styles.podcastFilter}
-          type="text"
-          id="search"
-          placeholder="Filter podcasts..."
-          onChange={(e) => filterPodcasts(e)}
-        />
+        <div className={styles.podcastFilterContainer}>
+          <div className={styles.podcastAmount}>{topPodcasts.length}</div>
+          <input
+            className={styles.podcastFilter}
+            type="text"
+            id="search"
+            placeholder="Filter podcasts..."
+            onChange={(e) => filterPodcasts(e)}
+          />
+        </div>
         <ul className={styles.podcastsContainer}>
           {topPodcasts.map((podcast) => (
             <li
