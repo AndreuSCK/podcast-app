@@ -1,0 +1,26 @@
+.episodeInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 1.5rem 1.5rem;
+  text-align: left;
+  gap: 1rem;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: left;
+}
+.description {
+  font-style: italic;
+}
+.audio {
+  width: 100%;
+  margin-top: 2rem;
+}
+.audio::-webkit-media-controls-panel {
+  background-color: #c8c8c8;
+}

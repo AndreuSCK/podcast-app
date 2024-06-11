@@ -2,17 +2,16 @@
 
 import { SetStateAction, useContext, useEffect, useState } from "react";
 import { TopPodcastType } from "../_types/topPodcastType";
-import { ThemeContext } from "../podcastProvider";
+import { PodcastContext } from "../podcastProvider";
 
 const useTopPodcasts = () => {
-  const [topPodcastsOriginal, setTopPodcastsOriginal] =
-    useState<TopPodcastType[]>();
-  const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>();
+  const { setPodcastData, topPodcasts, setTopPodcasts } =
+    useContext(PodcastContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
+  const [filteredPodcasts, setFilteredPodcasts] = useState<TopPodcastType[]>();
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
-
-  const { setPodcastDescription } = useContext(ThemeContext);
 
   useEffect(() => {
     const getTopPodcasts = async () => {
@@ -32,15 +31,7 @@ const useTopPodcasts = () => {
           throw new Error("No podcasts found");
         }
         setTopPodcasts(content.feed.entry);
-        setTopPodcastsOriginal(content.feed.entry);
-        setPodcastDescription(
-          content.feed.entry.map((podcast: TopPodcastType) => {
-            return {
-              id: podcast.id.attributes["im:id"],
-              description: podcast["summary"].label,
-            };
-          })
-        );
+        setFilteredPodcasts(topPodcasts);
       } catch (error) {
         console.log(error);
         setError(error);
@@ -52,15 +43,16 @@ const useTopPodcasts = () => {
   }, []);
 
   const filterPodcasts = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!topPodcasts || !topPodcastsOriginal) return;
+    if (!topPodcasts) return;
+    setFilteredPodcasts(topPodcasts);
     const search = event.target.value.toLowerCase();
-    const filteredPodcasts = topPodcastsOriginal.filter((podcast) => {
+    const filteredPodcasts = topPodcasts.filter((podcast) => {
       return (
         podcast["im:name"].label.toLowerCase().includes(search) ||
         podcast["im:artist"].label.toLowerCase().includes(search)
       );
     });
-    setTopPodcasts(filteredPodcasts);
+    setFilteredPodcasts(filteredPodcasts);
   };
 
   return { topPodcasts, filterPodcasts, loading: isLoading, error };
