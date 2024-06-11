@@ -1,7 +1,7 @@
 type Genre = {
   name: string;
   id: string;
-}
+};
 type PodcastInfoType = {
   wrapperType: string;
   kind: string;
@@ -34,7 +34,7 @@ type PodcastInfoType = {
   artworkUrl600: string;
   genreIds: string[];
   genres: string[];
-}
+};
 
 type PodcastEpisodeType = {
   episodeFileExtension: string;
@@ -64,4 +64,4 @@ type PodcastEpisodeType = {
   previewUrl: string;
   kind: string;
   wrapperType: string;
-}
+};
