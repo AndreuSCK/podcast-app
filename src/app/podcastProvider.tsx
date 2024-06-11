@@ -9,25 +9,30 @@ type PodcastDataType = {
 };
 type PodcastContextData = {
   podcastData: PodcastDataType | undefined;
-  setPodcastData: (podcasts: PodcastDataType) => void;
+  setPodcastData: (podcasts: PodcastDataType | undefined) => void;
   topPodcasts: TopPodcastType[];
   setTopPodcasts: (podcasts: TopPodcastType[]) => void;
   isLoading: boolean;
-  setIsloading: (loading: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
+  currentEpisode: string;
+  setCurrentEpisode: (episode: string) => void;
 };
 export const PodcastContext = createContext<PodcastContextData>({
   podcastData: {} as PodcastDataType,
-  setPodcastData: (podcasts: PodcastDataType) => {},
+  setPodcastData: (podcasts: PodcastDataType | undefined) => {},
   topPodcasts: {} as TopPodcastType[],
   setTopPodcasts: (podcasts: TopPodcastType[]) => {},
   isLoading: false,
-  setIsloading: (loading: boolean) => {},
+  setIsLoading: (loading: boolean) => {},
+  currentEpisode: '',
+  setCurrentEpisode: (episode: string) => {}
 });
 
 export function PodcastProvider({ children }: { children: ReactNode }) {
   const [podcastData, setPodcastData] = useState<PodcastDataType>();
   const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>([]);
-  const [isLoading, setIsloading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentEpisode, setCurrentEpisode] = useState<string>('');
 
   
   return (
@@ -38,7 +43,9 @@ export function PodcastProvider({ children }: { children: ReactNode }) {
         topPodcasts,
         setTopPodcasts,
         isLoading,
-        setIsloading,
+        setIsLoading,
+        currentEpisode,
+        setCurrentEpisode
       }}
     >
       {children}

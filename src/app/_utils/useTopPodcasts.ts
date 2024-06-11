@@ -5,16 +5,21 @@ import { TopPodcastType } from "../_types/topPodcastType";
 import { PodcastContext } from "../podcastProvider";
 
 const useTopPodcasts = () => {
-  const { topPodcasts, setTopPodcasts } = useContext(PodcastContext);
+  const {
+    topPodcasts,
+    setTopPodcasts,
+    isLoading,
+    setIsLoading,
+  } = useContext(PodcastContext);
 
-
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
-  const [filteredPodcasts, setFilteredPodcasts] = useState<TopPodcastType[]>(topPodcasts);
+  const [filteredPodcasts, setFilteredPodcasts] =
+    useState<TopPodcastType[]>(topPodcasts);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
 
   useEffect(() => {
     const getTopPodcasts = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `${ALLORIGINSURL}https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`,

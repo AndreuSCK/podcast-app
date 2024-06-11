@@ -1,17 +1,31 @@
-import { SetStateAction, cache, useContext, useEffect, useState } from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import { PodcastContext } from "../podcastProvider";
+import useTopPodcasts from "./useTopPodcasts";
 
 const usePodcast = (id: string) => {
-  const { podcastData, setPodcastData, topPodcasts } =
-    useContext(PodcastContext);
+  const {
+    podcastData,
+    setPodcastData,
+    topPodcasts,
+    isLoading,
+    setIsLoading,
+    currentEpisode,
+    setCurrentEpisode,
+  } = useContext(PodcastContext);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
 
   useEffect(() => {
     if (!id) return;
+    console.log(currentEpisode, id);
+    if (currentEpisode === id) {
+      setIsLoading(false);
+      return;
+    }
+    setPodcastData(undefined);
     const getPodcastData = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `${ALLORIGINSURL}${encodeURIComponent(
@@ -25,20 +39,21 @@ const usePodcast = (id: string) => {
           }
         );
         const data = await response.json();
-        const content = JSON.parse(data.contents);
+        const content = await JSON.parse(data.contents);
         if (content && content.resultCount === 0) {
           throw new Error();
         }
-        setPodcastData({
+        setCurrentEpisode(id);
+        const podcastData = {
           info: content.results.shift(),
           episodes: content.results,
           podcastCount: content.resultCount,
-        });
+        };
+        setPodcastData(podcastData);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
         setError(error);
-      } finally {
-        setIsLoading(false);
       }
     };
     getPodcastData();
@@ -54,7 +69,7 @@ const usePodcast = (id: string) => {
       (podcast) => podcast.id.attributes["im:id"] === id
     );
     if (!podcast) return;
-    return podcast.summary.label;
+    useTopPodcasts();
   };
 
   return {

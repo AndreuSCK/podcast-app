@@ -1,18 +1,20 @@
 "use client";
-import usePodcast from "@/app/_utils/usePodcast";
 import styles from "./page.module.css";
 import { useParams } from "next/navigation";
 import { FormatDescription } from "@/app/_utils/formatDescription";
+import { useCallback, useContext } from "react";
+import { PodcastContext } from "@/app/podcastProvider";
+import usePodcast from "@/app/_utils/usePodcast";
 
 export default function Page() {
-  const {  episodeId } = useParams();
-  const { getEpisode } = usePodcast(episodeId as string);
+  const { episodeId, podcastId } = useParams();
+  const { isLoading } = useContext(PodcastContext);
+  const { getEpisode } = usePodcast(podcastId as string);
 
-  const episode = getEpisode(episodeId as string);
-  
+  const episodeFn = useCallback(() => getEpisode(episodeId as string), [episodeId]);
+  const episode = episodeFn();
+  if (isLoading) return <p className={styles.status}>Loading...</p>;
   if (!episode) return <p>Episode not found</p>;
-  console.log(episode);
-
   return (
     <section className={styles.episodeInfo}>
       <h1 className={styles.title}>{episode.trackName}</h1>

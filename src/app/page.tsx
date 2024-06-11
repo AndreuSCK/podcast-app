@@ -5,7 +5,8 @@ import useTopPodcasts from "./_utils/useTopPodcasts";
 
 export default function Home() {
   const router = useRouter();
-  const { topPodcasts, filterPodcasts, loading, error, filteredPodcasts } = useTopPodcasts();
+  const { topPodcasts, filterPodcasts, loading, error, filteredPodcasts } =
+    useTopPodcasts();
   if (loading) {
     return <p className={styles.status}>Loading...</p>;
   }
@@ -30,9 +31,9 @@ export default function Home() {
             <li
               key={podcast.id.attributes["im:id"]}
               className={styles.podcastCard}
-              onClick={() =>
-                router.push(`/podcast/${podcast.id.attributes["im:id"]}`)
-              }
+              onClick={() => {
+                router.push(`/podcast/${podcast.id.attributes["im:id"]}`);
+              }}
             >
               <h2 className={styles.podcastTitle}>
                 {podcast["im:name"].label.toUpperCase()}

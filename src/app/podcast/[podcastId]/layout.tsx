@@ -6,6 +6,8 @@ import usePodcast from "@/app/_utils/usePodcast";
 import { useParams } from "next/navigation";
 import { useContext } from "react";
 import { PodcastContext } from "@/app/podcastProvider";
+import Link from "next/link";
+import useTopPodcasts from "@/app/_utils/useTopPodcasts";
 
 export default function Layout({
   children,
@@ -13,22 +15,30 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   const { podcastId } = useParams();
-  const { loading, error, getDescription } = usePodcast(podcastId as string);
+  const { loading, error } = usePodcast(podcastId as string);
   const { podcastData } = useContext(PodcastContext);
-  const description = getDescription(podcastId as string);
+  const { topPodcasts } = useTopPodcasts();
 
-  if (loading) return <p className={styles.status}>Loading...</p>;
-  if (error || !podcastData)
+  const description = topPodcasts?.find(
+    (podcast) => podcast.id.attributes["im:id"] === podcastId
+  )?.summary.label;
+
+  if (loading || !podcastData) return <p className={styles.status}>Loading...</p>;
+  if (error)
     return <p className={styles.error}>Error fetching or Podcast not found</p>;
   return (
     <main className={styles.main}>
       <section className={styles.podcastInfo}>
-        <img
-          className={styles.podcastImage}
-          src={podcastData.info.artworkUrl600}
-          alt={podcastData.info.collectionName}
-        />
-        <h2>{podcastData.info.collectionName}</h2>
+        <Link href={`/podcast/${podcastId}`}>
+          <img
+            className={styles.podcastImage}
+            src={podcastData.info.artworkUrl600}
+            alt={podcastData.info.collectionName}
+          />
+        </Link>
+        <Link href={`/podcast/${podcastId}`}>
+          <h2>{podcastData.info.collectionName}</h2>
+        </Link>
         <p className={styles.artistName}>by {podcastData.info.artistName}</p>
         <h3>Description:</h3>
         <div className={styles.podcastDescription}>
