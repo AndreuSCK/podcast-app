@@ -12,18 +12,24 @@ type PodcastContextData = {
   setPodcastData: (podcasts: PodcastDataType) => void;
   topPodcasts: TopPodcastType[];
   setTopPodcasts: (podcasts: TopPodcastType[]) => void;
+  isLoading: boolean;
+  setIsloading: (loading: boolean) => void;
 };
 export const PodcastContext = createContext<PodcastContextData>({
   podcastData: {} as PodcastDataType,
   setPodcastData: (podcasts: PodcastDataType) => {},
   topPodcasts: {} as TopPodcastType[],
   setTopPodcasts: (podcasts: TopPodcastType[]) => {},
+  isLoading: false,
+  setIsloading: (loading: boolean) => {},
 });
 
 export function PodcastProvider({ children }: { children: ReactNode }) {
   const [podcastData, setPodcastData] = useState<PodcastDataType>();
   const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>([]);
+  const [isLoading, setIsloading] = useState<boolean>(true);
 
+  
   return (
     <PodcastContext.Provider
       value={{
@@ -31,6 +37,8 @@ export function PodcastProvider({ children }: { children: ReactNode }) {
         setPodcastData,
         topPodcasts,
         setTopPodcasts,
+        isLoading,
+        setIsloading,
       }}
     >
       {children}
