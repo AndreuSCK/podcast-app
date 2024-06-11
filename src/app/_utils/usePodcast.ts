@@ -26,7 +26,6 @@ const usePodcast = (id: string) => {
         );
         const data = await response.json();
         const content = JSON.parse(data.contents);
-        console.log(content.results[0]);
         if (content && content.resultCount === 0) {
           throw new Error();
         }

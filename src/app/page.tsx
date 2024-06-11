@@ -5,19 +5,18 @@ import useTopPodcasts from "./_utils/useTopPodcasts";
 
 export default function Home() {
   const router = useRouter();
-  const { topPodcasts, filterPodcasts, loading, error } = useTopPodcasts();
-
+  const { topPodcasts, filterPodcasts, loading, error, filteredPodcasts } = useTopPodcasts();
   if (loading) {
     return <p className={styles.status}>Loading...</p>;
   }
-  if (error || !topPodcasts) {
+  if (error || !topPodcasts || !filteredPodcasts) {
     return <p className={styles.status}>Error fetching data</p>;
   }
   return (
     <main className={styles.main}>
       <section className={styles.podcastSection}>
         <div className={styles.podcastFilterContainer}>
-          <div className={styles.podcastAmount}>{topPodcasts.length}</div>
+          <div className={styles.podcastAmount}>{filteredPodcasts.length}</div>
           <input
             className={styles.podcastFilter}
             type="text"
@@ -27,7 +26,7 @@ export default function Home() {
           />
         </div>
         <ul className={styles.podcastsContainer}>
-          {topPodcasts.map((podcast) => (
+          {filteredPodcasts.map((podcast) => (
             <li
               key={podcast.id.attributes["im:id"]}
               className={styles.podcastCard}

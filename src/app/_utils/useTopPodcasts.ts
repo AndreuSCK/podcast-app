@@ -5,12 +5,12 @@ import { TopPodcastType } from "../_types/topPodcastType";
 import { PodcastContext } from "../podcastProvider";
 
 const useTopPodcasts = () => {
-  const { setPodcastData, topPodcasts, setTopPodcasts } =
-    useContext(PodcastContext);
+  const { topPodcasts, setTopPodcasts } = useContext(PodcastContext);
+
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | SetStateAction<unknown>>(null);
-  const [filteredPodcasts, setFilteredPodcasts] = useState<TopPodcastType[]>();
+  const [filteredPodcasts, setFilteredPodcasts] = useState<TopPodcastType[]>(topPodcasts);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const useTopPodcasts = () => {
           throw new Error("No podcasts found");
         }
         setTopPodcasts(content.feed.entry);
-        setFilteredPodcasts(topPodcasts);
+        setFilteredPodcasts(content.feed.entry);
       } catch (error) {
         console.log(error);
         setError(error);
@@ -55,6 +55,12 @@ const useTopPodcasts = () => {
     setFilteredPodcasts(filteredPodcasts);
   };
 
-  return { topPodcasts, filterPodcasts, loading: isLoading, error };
+  return {
+    topPodcasts,
+    filterPodcasts,
+    loading: isLoading,
+    error,
+    filteredPodcasts,
+  };
 };
 export default useTopPodcasts;
