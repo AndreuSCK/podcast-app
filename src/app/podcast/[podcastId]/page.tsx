@@ -5,18 +5,21 @@ import { formatDate, formatDuration } from "@/app/_utils/formatHelpers";
 import Link from "next/link";
 import { useContext } from "react";
 import { PodcastContext } from "@/app/podcastProvider";
+import usePodcast from "@/app/_utils/usePodcast";
 
 export default function Page() {
   const { podcastId } = useParams();
-  const { podcastData, isLoading } = useContext(PodcastContext);
+  const { podcastData, isLoading, error, currentEpisode } = usePodcast(podcastId as string);  
 
-  if (!podcastData) return;
-  const { episodes, podcastCount } = podcastData;
-  if (isLoading) return <p className={styles.status}>Loading...</p>;
-
-  if (!episodes || !podcastCount) {
-    return <p className={styles.status}>Error fetching or Podcast not found</p>;
+  
+  if (isLoading || (currentEpisode !== podcastId)) return <p className={styles.status}>Loading...</p>;
+  if (error) return <p className={styles.status}>Error: {error.message}</p>;
+  if (!podcastData) return <p className={styles.status}>No podcast found</p>;
+  if (!podcastData.episodes || !podcastData.podcastCount) {
+    return <p className={styles.status}>No episodes found</p>;
   }
+  const { episodes, podcastCount } = podcastData;
+  
   return (
     <>
       <div className={styles.episodeBlock}>Episodes: {podcastCount}</div>

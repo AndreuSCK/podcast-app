@@ -5,9 +5,10 @@ import useTopPodcasts from "./_utils/useTopPodcasts";
 
 export default function Home() {
   const router = useRouter();
-  const { topPodcasts, filterPodcasts, loading, error, filteredPodcasts } =
+  const { topPodcasts, filterPodcasts, isLoading, error, filteredPodcasts } =
     useTopPodcasts();
-  if (loading) {
+    
+  if (isLoading) {
     return <p className={styles.status}>Loading...</p>;
   }
   if (error || !topPodcasts || !filteredPodcasts) {

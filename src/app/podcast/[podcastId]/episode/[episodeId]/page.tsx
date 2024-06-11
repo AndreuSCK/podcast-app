@@ -7,12 +7,12 @@ import { PodcastContext } from "@/app/podcastProvider";
 import usePodcast from "@/app/_utils/usePodcast";
 
 export default function Page() {
-  const { episodeId, podcastId } = useParams();
-  const { isLoading } = useContext(PodcastContext);
-  const { getEpisode } = usePodcast(podcastId as string);
-
-  const episodeFn = useCallback(() => getEpisode(episodeId as string), [episodeId]);
-  const episode = episodeFn();
+  const { podcastId, episodeId } = useParams();
+  const { podcastData, isLoading } = usePodcast(podcastId as string);
+  const episode = podcastData?.episodes.find(
+    (episode) => episode.trackId === Number(episodeId)
+  );
+  
   if (isLoading) return <p className={styles.status}>Loading...</p>;
   if (!episode) return <p>Episode not found</p>;
   return (

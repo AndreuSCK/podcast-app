@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { TopPodcastType } from "./_types/topPodcastType";
 
 type PodcastDataType = {
