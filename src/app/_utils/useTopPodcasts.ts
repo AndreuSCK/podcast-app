@@ -1,28 +1,38 @@
 "use client";
 
-import { SetStateAction, useCallback, useContext, useEffect, useState } from "react";
+import {
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { TopPodcastType } from "../_types/topPodcastType";
 import { PodcastContext } from "../podcastProvider";
 
 const useTopPodcasts = () => {
-  const { topPodcasts, setTopPodcasts, isLoading, setIsLoading } =
-    useContext(PodcastContext);
+  const {
+    topPodcasts,
+    setTopPodcasts,
+    isTopPodcastLoading,
+    setIsTopPodcastLoading,
+  } = useContext(PodcastContext);
 
   const [error, setError] = useState<Error>();
   const [filteredPodcasts, setFilteredPodcasts] =
     useState<TopPodcastType[]>(topPodcasts);
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
 
-
   const getTopPodcasts = async () => {
     if (topPodcasts.length > 0) {
-      setIsLoading(false);
+      setIsTopPodcastLoading(false);
       return;
     }
-    setIsLoading(true);
+    if (isTopPodcastLoading) return;
+    setIsTopPodcastLoading(true);
     try {
       const response = await fetch(
-        `${ALLORIGINSURL}https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`,
+        `https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`,
         {
           method: "GET",
           next: {
@@ -34,17 +44,16 @@ const useTopPodcasts = () => {
         throw new Error("Network error");
       }
       const data = await response.json();
-      const content = JSON.parse(data.contents);
-      if (!content.feed.entry) {
+
+      if (!data.feed.entry) {
         throw new Error("No podcasts found");
       }
-      setTopPodcasts(content.feed.entry);
-      setFilteredPodcasts(content.feed.entry);
+      setTopPodcasts(data.feed.entry);
+      setFilteredPodcasts(data.feed.entry);
     } catch (error) {
-      console.log(error);
       setError(error as Error);
     } finally {
-      setIsLoading(false);
+      setIsTopPodcastLoading(false);
     }
   };
   useEffect(() => {
@@ -67,7 +76,7 @@ const useTopPodcasts = () => {
   return {
     topPodcasts,
     filterPodcasts,
-    isLoading,
+    isTopPodcastLoading,
     filteredPodcasts,
     error,
   };

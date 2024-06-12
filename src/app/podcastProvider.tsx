@@ -12,8 +12,10 @@ type PodcastContextData = {
   setPodcastData: (podcasts: PodcastDataType | undefined) => void;
   topPodcasts: TopPodcastType[];
   setTopPodcasts: (podcasts: TopPodcastType[]) => void;
-  isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
+  isTopPodcastLoading: boolean;
+  setIsTopPodcastLoading: (loading: boolean) => void;
+  isPodcastLoading: boolean;
+  setIsPodcastLoading: (loading: boolean) => void;
   currentEpisode: string;
   setCurrentEpisode: (episode: string) => void;
 };
@@ -22,19 +24,20 @@ export const PodcastContext = createContext<PodcastContextData>({
   setPodcastData: (podcasts: PodcastDataType | undefined) => {},
   topPodcasts: {} as TopPodcastType[],
   setTopPodcasts: (podcasts: TopPodcastType[]) => {},
-  isLoading: false,
-  setIsLoading: (loading: boolean) => {},
-  currentEpisode: '',
-  setCurrentEpisode: (episode: string) => {}
+  currentEpisode: "",
+  setCurrentEpisode: (episode: string) => {},
+  isTopPodcastLoading: false,
+  setIsTopPodcastLoading: (loading: boolean) => {},
+  isPodcastLoading: false,
+  setIsPodcastLoading: (loading: boolean) => {},
 });
 
 export function PodcastProvider({ children }: { children: ReactNode }) {
   const [podcastData, setPodcastData] = useState<PodcastDataType>();
   const [topPodcasts, setTopPodcasts] = useState<TopPodcastType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [currentEpisode, setCurrentEpisode] = useState<string>('');
-
-  
+  const [isTopPodcastLoading, setIsTopPodcastLoading] = useState<boolean>(false);
+  const [isPodcastLoading, setIsPodcastLoading] = useState<boolean>(false);
+  const [currentEpisode, setCurrentEpisode] = useState<string>("");
   return (
     <PodcastContext.Provider
       value={{
@@ -42,10 +45,12 @@ export function PodcastProvider({ children }: { children: ReactNode }) {
         setPodcastData,
         topPodcasts,
         setTopPodcasts,
-        isLoading,
-        setIsLoading,
+        isTopPodcastLoading,
+        setIsTopPodcastLoading,
+        isPodcastLoading,
+        setIsPodcastLoading,
         currentEpisode,
-        setCurrentEpisode
+        setCurrentEpisode,
       }}
     >
       {children}

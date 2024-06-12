@@ -12,14 +12,14 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   const { podcastId } = useParams();
-  const { topPodcasts, isLoading, error } = useTopPodcasts();
+  const { isTopPodcastLoading, topPodcasts, error } = useTopPodcasts();
   const currentPodcast = topPodcasts?.find(
     (podcast) => podcast.id.attributes["im:id"] === podcastId
   );
 
-  if (isLoading) return <p className={styles.status}>Loading...</p>;
-  if (error) return <p className={styles.status}>Error: {error.message}</p>;
-  if (!currentPodcast) return <p className={styles.status}>No podcast found</p>;
+  if (isTopPodcastLoading || !currentPodcast) return <p className={styles.status}>Loading...</p>;
+  if (error || (topPodcasts && !currentPodcast))
+    return <p className={styles.status}>Error fetching or podcast not found</p>;
   return (
     <main className={styles.main}>
       <section className={styles.podcastInfo}>

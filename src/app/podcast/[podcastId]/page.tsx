@@ -9,17 +9,16 @@ import usePodcast from "@/app/_utils/usePodcast";
 
 export default function Page() {
   const { podcastId } = useParams();
-  const { podcastData, isLoading, error, currentEpisode } = usePodcast(podcastId as string);  
+  const { podcastData, isPodcastLoading, error } = usePodcast(
+    podcastId as string
+  );
 
-  
-  if (isLoading || (currentEpisode !== podcastId)) return <p className={styles.status}>Loading...</p>;
-  if (error) return <p className={styles.status}>Error: {error.message}</p>;
-  if (!podcastData) return <p className={styles.status}>No podcast found</p>;
-  if (!podcastData.episodes || !podcastData.podcastCount) {
-    return <p className={styles.status}>No episodes found</p>;
-  }
+  if (isPodcastLoading || podcastData?.info.collectionId !== Number(podcastId))
+    return <p className={styles.status}>Loading...</p>;
+  if (!podcastData || error)
+    return <p className={styles.status}>Network error or podcast not found</p>;
   const { episodes, podcastCount } = podcastData;
-  
+
   return (
     <>
       <div className={styles.episodeBlock}>Episodes: {podcastCount}</div>

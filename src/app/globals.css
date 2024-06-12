@@ -18,7 +18,10 @@ body {
   margin: 0 auto;
   text-align: center;
 }
-
+html {
+  /* needed to not have layout shifts */
+  overflow-y: scroll;
+}
 body {
   color: #060606;
   background: rgb(250, 250, 250);

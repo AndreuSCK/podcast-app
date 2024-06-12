@@ -17,8 +17,8 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  width: 30%;
-  padding: 4rem;
+  width: 35%;
+  padding: 1rem;
   border-radius: 4px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   text-align: left;
@@ -39,7 +39,7 @@
 .mainContent {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 65%;
   gap: 2rem;
   width: 100%;
   text-align: center;
@@ -97,4 +97,17 @@
   line-height: 1.5;
   font-style: italic;
   word-wrap: break-word;
+}
+
+/* in less than 720px then main stacks flex, not vertically */
+@media (max-width: 720px) {
+  .main {
+    flex-direction: column;
+  }
+  .podcastInfo {
+    width: 100%;
+  }
+  .mainContent {
+    width: 100%;
+  }
 }

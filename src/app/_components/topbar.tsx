@@ -4,7 +4,7 @@ import styles from "./topbar.module.css";
 import { useContext } from "react";
 import { PodcastContext } from "../podcastProvider";
 export default function Topbar() {
-  const { isLoading } = useContext(PodcastContext);
+  const { isPodcastLoading, isTopPodcastLoading } = useContext(PodcastContext);
 
   return (
     <nav className={styles.topbar}>
@@ -12,7 +12,9 @@ export default function Topbar() {
         <Link href="/" prefetch={false}>
           <h1>Podcaster</h1>
         </Link>
-        {isLoading && <div className={styles.loadingCircle} />}
+        {(isPodcastLoading || isTopPodcastLoading) && (
+          <div className={styles.loadingCircle} />
+        )}
       </div>
     </nav>
   );

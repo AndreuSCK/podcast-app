@@ -6,23 +6,21 @@ const usePodcast = (id: string) => {
   const {
     podcastData,
     setPodcastData,
-    topPodcasts,
-    isLoading,
-    setIsLoading,
+    isPodcastLoading,
+    setIsPodcastLoading,
     currentEpisode,
     setCurrentEpisode,
   } = useContext(PodcastContext);
-
-  const [error, setError] = useState<Error>();
   const ALLORIGINSURL = "https://api.allorigins.win/get?url=";
+  const [error, setError] = useState<Error>();
 
   useEffect(() => {
+    if (isPodcastLoading) return;
     if (podcastData && currentEpisode === id) return;
     fetchEpisodes();
   }, [podcastData]);
 
   const fetchEpisodes = async () => {
-    setIsLoading(true);
     try {
       const response = await fetch(
         `${ALLORIGINSURL}${encodeURIComponent(
@@ -40,19 +38,18 @@ const usePodcast = (id: string) => {
       if (content && content.resultCount === 0) {
         throw new Error();
       }
-      console.log(content);
       setCurrentEpisode(id);
       const podcastData = {
         info: content.results.shift(),
         episodes: content.results,
-        podcastCount: content.resultCount,
+        podcastCount: content.resultCount - 1,
       };
       setPodcastData(podcastData);
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
       setError(error as Error);
+    } finally {
+      setIsPodcastLoading(false);
     }
   };
 
@@ -61,19 +58,11 @@ const usePodcast = (id: string) => {
       (episode) => episode.trackId === Number(episodeId)
     );
   };
-  const getDescription = (id: string) => {
-    const podcast = topPodcasts?.find(
-      (podcast) => podcast.id.attributes["im:id"] === id
-    );
-    if (!podcast) return;
-    useTopPodcasts();
-  };
-  
+
   return {
-    isLoading,
+    isPodcastLoading,
     error,
     getEpisode,
-    getDescription,
     podcastData,
     fetchEpisodes,
     currentEpisode,
